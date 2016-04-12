@@ -4,12 +4,12 @@ public class BookVO {
 
 	private Long id;
 	private String title;
-	private String author;
+	private String authors;
 
-	public BookVO(Long id, String title, String author) {
+	public BookVO(Long id, String title, String authors) {
 		this.id = id;
 		this.title = title;
-		this.author = author;
+		this.authors = authors;
 	}
 
 	public Long getId() {
@@ -28,11 +28,11 @@ public class BookVO {
 		this.title = title;
 	}
 
-	public String getAuthor() {
-		return author;
+	public String getAuthors() {
+		return authors;
 	}
 
-	public void setAuthor(String author) {
-		this.author = author;
+	public void setAuthors(String authors) {
+		this.authors = authors;
 	}
 }

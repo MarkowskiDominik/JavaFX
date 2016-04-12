@@ -10,10 +10,10 @@ import javafx.beans.property.StringProperty;
 import javafx.bookmanager.data.BookVO;
 import javafx.collections.FXCollections;
 
-public class BookManager {
+public class BookManagerModel {
 
 	private final StringProperty title = new SimpleStringProperty();
-	private final StringProperty author = new SimpleStringProperty();
+	private final StringProperty authors = new SimpleStringProperty();
 	private final ListProperty<BookVO> result = new SimpleListProperty<>(
 			FXCollections.observableList(new ArrayList<>()));
 
@@ -29,16 +29,16 @@ public class BookManager {
 		return title;
 	}
 
-	public String getAuthor() {
-		return author.get();
+	public String getAuthors() {
+		return authors.get();
 	}
 
-	public final void setAuthor(String author) {
-		this.author.set(author);
+	public final void setAuthors(String authors) {
+		this.authors.set(authors);
 	}
 
-	public StringProperty authorProperty() {
-		return author;
+	public StringProperty authorsProperty() {
+		return authors;
 	}
 
 	public List<BookVO> getResult() {

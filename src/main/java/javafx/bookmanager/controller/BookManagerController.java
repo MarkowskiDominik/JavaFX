@@ -10,7 +10,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.ReadOnlyStringWrapper;
 import javafx.bookmanager.data.BookVO;
 import javafx.bookmanager.dataprovider.DataProvider;
-import javafx.bookmanager.model.BookManager;
+import javafx.bookmanager.model.BookManagerModel;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,7 +40,7 @@ public class BookManagerController {
 	@FXML
 	private TableColumn<BookVO, String> authorColumn;
 
-	private final BookManager model = new BookManager();
+	private final BookManagerModel model = new BookManagerModel();
 
 	public BookManagerController() {
 		LOG.debug("Construct");
@@ -53,14 +53,16 @@ public class BookManagerController {
 		initializeResultTable();
 
 		titleField.textProperty().bindBidirectional(model.titleProperty());
-		authorField.textProperty().bindBidirectional(model.authorProperty());
+		model.setTitle("");
+		authorField.textProperty().bindBidirectional(model.authorsProperty());
+		model.setAuthors("");
 		resultTable.itemsProperty().bind(model.resultProperty());
 	}
 
 	private void initializeResultTable() {
 		idColumn.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<Long>(cellData.getValue().getId()));
 		titleColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getTitle()));
-		authorColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAuthor()));
+		authorColumn.setCellValueFactory(cellData -> new ReadOnlyStringWrapper(cellData.getValue().getAuthors()));
 	}
 
 	@FXML
@@ -70,7 +72,7 @@ public class BookManagerController {
 		Task<Collection<BookVO>> backgroundTask = new Task<Collection<BookVO>>() {
 			@Override
 			protected Collection<BookVO> call() throws Exception {
-				return dataProvider.findBooks(model.getTitle(), model.getAuthor());
+				return dataProvider.findBooks(model.getTitle(), model.getAuthors());
 			}
 
 			@Override
@@ -90,7 +92,7 @@ public class BookManagerController {
 		Task<BookVO> backgroundTask = new Task<BookVO>() {
 			@Override
 			protected BookVO call() throws Exception {
-				return dataProvider.addBook(model.getTitle(), model.getAuthor());
+				return dataProvider.addBook(model.getTitle(), model.getAuthors());
 			}
 
 			@Override
