@@ -12,6 +12,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+import org.apache.log4j.Logger;
 
 import com.google.gson.JsonObject;
 
@@ -28,7 +29,8 @@ public class DataProvider {
 	 * http://localhost:9721/workshop/book POST
 	 * JSON: { "title": "", "authors": "" }
 	 */
-	
+
+	private static final Logger LOG = Logger.getLogger(DataProvider.class);
 	JsonMapper jsonMapper = new JsonMapper();
 	
 	private enum Type {
@@ -36,24 +38,23 @@ public class DataProvider {
 	}
 	
 	public Collection<BookVO> findBooks(String title, String authors) {
+		LOG.debug("findBooks()");
+		
 		return jsonMapper.parseResponse(httpRequest(jsonMapper.map2Json(title, authors), Type.FIND));
 	}
 	
 	public BookVO addBook(String title, String authors) {
+		LOG.debug("addBooks()");
+		
 		return jsonMapper.map2BookVO(httpRequest(jsonMapper.map2Json(title, authors), Type.ADD));
 	}
 
 	private String httpRequest(JsonObject jsonObject, Type type) {
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create().build()) {
-			HttpPost request;
-			if (Type.ADD.equals(type)) {
-				request = new HttpPost("http://localhost:9721/workshop/book");
-			}
-			else {
-				request = new HttpPost("http://localhost:9721/workshop/books");
-			}
+			LOG.debug("httpRequest()");			
+			
+			HttpPost request = new HttpPost(getAddress(type));
 			request.addHeader("content-type", "application/json");
-			System.out.println(jsonObject.toString());
 			request.setEntity(new StringEntity(jsonObject.toString()));
 
 			ResponseHandler<String> responseHandler = new ResponseHandler<String>() {
@@ -73,6 +74,21 @@ public class DataProvider {
 			
 		}
 		return null;
+	}
+	
+	private String getAddress(Type type) {
+		String address;
+		switch (type) {
+		case ADD:
+			address = "http://localhost:9721/workshop/book";
+			break;
+		case FIND:
+			address = "http://localhost:9721/workshop/books";
+			break;
+		default:
+			address = "http://localhost:9721/workshop/book";
+		}
+		return address;
 	}
 
 }

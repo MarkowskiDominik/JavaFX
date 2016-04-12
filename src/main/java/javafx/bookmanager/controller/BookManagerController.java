@@ -43,7 +43,7 @@ public class BookManagerController {
 	private final BookManagerModel model = new BookManagerModel();
 
 	public BookManagerController() {
-		LOG.debug("Construct");
+		LOG.debug("BookManagerController()");
 	}
 
 	@FXML
@@ -79,6 +79,8 @@ public class BookManagerController {
 			protected void succeeded() {
 				model.setResult(new ArrayList<BookVO>(getValue()));
 				resultTable.getSortOrder().clear();
+
+				LOG.debug("Search completed");
 			}
 		};
 
@@ -99,6 +101,8 @@ public class BookManagerController {
 			protected void succeeded() {
 				model.setResult(Arrays.asList(getValue()));
 				resultTable.getSortOrder().clear();
+				
+				LOG.debug("Add completed");
 			}
 		};
 
