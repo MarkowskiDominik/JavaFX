@@ -1,7 +1,6 @@
 package javafx.bookmanager.dataprovider;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apache.http.HttpEntity;
@@ -17,6 +16,7 @@ import org.apache.http.util.EntityUtils;
 import com.google.gson.JsonObject;
 
 import javafx.bookmanager.data.BookVO;
+import javafx.bookmanager.jsonmapper.JsonMapper;
 
 public class DataProvider {
 	/*
@@ -29,28 +29,18 @@ public class DataProvider {
 	 * JSON: { "title": "", "authors": "" }
 	 */
 	
+	JsonMapper jsonMapper = new JsonMapper();
+	
 	private enum Type {
 		ADD, FIND
 	}
 	
-	JsonObject json;
-
 	public Collection<BookVO> findBooks(String title, String authors) {
-		json = new JsonObject();		
-		json.addProperty("title", title);
-		json.addProperty("authors", authors);
-
-		System.out.println(httpRequest(json, Type.FIND));
-		return new ArrayList<>();
+		return jsonMapper.parseResponse(httpRequest(jsonMapper.map2Json(title, authors), Type.FIND));
 	}
 	
 	public BookVO addBook(String title, String authors) {
-		json = new JsonObject();		
-		json.addProperty("title", title);
-		json.addProperty("authors", authors);
-
-		System.out.println(httpRequest(json, Type.ADD));
-		return new BookVO(1L,title,authors);
+		return jsonMapper.map2BookVO(httpRequest(jsonMapper.map2Json(title, authors), Type.ADD));
 	}
 
 	private String httpRequest(JsonObject jsonObject, Type type) {
